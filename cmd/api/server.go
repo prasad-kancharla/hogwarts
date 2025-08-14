@@ -83,6 +83,7 @@ func teachersHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 
+		// Path params
 		// teachers/{teacherId}
 		// teachers/3
 
@@ -90,6 +91,21 @@ func teachersHandler(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/teachers/")
 		teacherId := strings.TrimSuffix(path, "/")
 		fmt.Println("Extracted teacherId as a path param:", teacherId)
+
+		//Query params
+		// teachers/?key=value&sortby=email&sortorder=asc
+
+		queryParams := r.URL.Query()
+
+		fmt.Println(queryParams.Get("key"))
+		fmt.Println(queryParams.Get("sortby"))
+		sortOrder := queryParams.Get("sortorder")
+
+		// default value
+		if sortOrder == "" {
+			sortOrder = "desc"
+		}
+		fmt.Println()
 
 		log.Println("Got a request to teachers using method " + r.Method)
 		w.Write([]byte("Hello teachers from " + r.Method))
