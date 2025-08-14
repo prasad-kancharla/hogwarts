@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type User struct {
@@ -81,6 +82,15 @@ func teachersHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
+
+		// teachers/{teacherId}
+		// teachers/3
+
+		fmt.Println("Path from url:", r.URL.Path)
+		path := strings.TrimPrefix(r.URL.Path, "/teachers/")
+		teacherId := strings.TrimSuffix(path, "/")
+		fmt.Println("Extracted teacherId as a path param:", teacherId)
+
 		log.Println("Got a request to teachers using method " + r.Method)
 		w.Write([]byte("Hello teachers from " + r.Method))
 	case http.MethodPost:
@@ -131,11 +141,11 @@ func main() {
 
 	http.HandleFunc("/", rootHandler)
 
-	http.HandleFunc("/students", studentsHandler)
+	http.HandleFunc("/students/", studentsHandler)
 
-	http.HandleFunc("/teachers", teachersHandler)
+	http.HandleFunc("/teachers/", teachersHandler)
 
-	http.HandleFunc("/execs", execsHandler)
+	http.HandleFunc("/execs/", execsHandler)
 
 	err := http.ListenAndServe(port, nil)
 	if err != nil {
